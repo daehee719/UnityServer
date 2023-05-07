@@ -1,0 +1,69 @@
+추가 기능 구현을 위해서 패킷을 만들어야하는데, 그걸 하려면 배치파일을 활용하여 코드를 자동으로 추가하면 된다.
+
+원래 있었던 pdl파일로는 채팅만 가능한 패킷 구조.
+생성 및 움직임 보일 수 있게.
+
+기존에는 세션 만들고 딱히 뭔가를 하지 않음.
+근데 MMO는 다양한 작업을 해야함.
+
+![image](https://user-images.githubusercontent.com/81199906/236629289-732c062a-4863-4c6c-9efe-27060a7c79c8.png)
+
+S_BroadcastEnterGame => 플레이어가 들어왔을 플레이어 아이디, 위치 값을 서버가 뿌림
+
+![image](https://user-images.githubusercontent.com/81199906/236629991-e4006239-e41c-42be-b20a-d21e5272fbb9.png)
+
+C_LeaveGame => 클라에서 게임 떠남
+
+S_BroadcastLeaveGame => 플레이어가 떠났음을 서버가 뿌림
+
+![image](https://user-images.githubusercontent.com/81199906/236629928-3baa81c1-d963-4820-b1fd-a060171e6512.png)
+
+S_PlayerList => 새로 들어온 클라한테 기존에 있던 플레이어 목록을 알려주기 위한 플레이어 리스트{플레이어 아이디, 위치, 자기 자신인지} 뿌림 
+
+C_Move => 클라에서 이동함
+
+S_BroadcastMove => 어떤 유저가 이동함을 서버에서 뿌림
+
+![image](https://user-images.githubusercontent.com/81199906/236629902-72edcf9a-8997-407b-8d69-27ef6a1932ba.png)
+
+
+여기서 클라이언트 패킷은 왜 플레이어 아이디를 안가져도 되나면, 애초에 클라가 들어올 때, 세션에서 플레이어 아이디를 따로 보관하면 됨.
+
+나중에는 클라 세션에서 플레이어 정보 다 넣는게 아니라 player코드에서 관리하게하게 함
+
+![image](https://user-images.githubusercontent.com/81199906/236629781-164c9127-0b66-4217-bb86-eb26ffbb6df3.png)
+
+그리고 이 것들은 GenPacket에서 정의된다.
+
+그 다음, 여태 했던 버퍼를 보낸다.
+
+![image](https://user-images.githubusercontent.com/81199906/236630160-85d6add5-ffa1-4055-8f22-8e9e1c595d12.png)
+
+
+구조
+
+![image](https://user-images.githubusercontent.com/81199906/236634932-60ea405c-3ad5-41e7-8214-7b2275fb9b7e.png)
+
+![image](https://user-images.githubusercontent.com/81199906/236634962-bfb38d01-88c1-471b-82d4-8d851d71f592.png)
+
+
+![image](https://user-images.githubusercontent.com/81199906/236635208-1c6dab37-7212-45f1-9b23-8fb3eb9644fd.png)
+
+
+![image](https://user-images.githubusercontent.com/81199906/236684247-ca504d24-5907-48e9-9216-35d559b9fbc3.png)
+
+1. 서버코어 패킷세션의 OnRecv함수에서 패킷을 보관 및 조립
+2. 클라 패킷 매니저에서 OnRecvPacket함수 실행
+    1. 옵션이 있다면, 그 옵션 대리자 실행
+    2. 없다면 HandlePacket함수 실행
+        ![image](https://user-images.githubusercontent.com/81199906/236635694-a89d5ac4-7f8a-4986-8b0d-411fdfde2f13.png)
+        1. 해당 패킷의 프로토콜이 _handler에 있다면 대리자 실행
+
+클라 :
+![image](https://user-images.githubusercontent.com/81199906/236636451-dd0600b2-da5a-48b0-947c-34616865c90e.png)
+
+
+
+임시로 모든 세션들의 move패킷에서 랜덤 위치로 이동한다.
+
+![image](https://user-images.githubusercontent.com/81199906/236635084-9bb90731-35ab-46b6-9d4e-dbddb5c7d578.png)
