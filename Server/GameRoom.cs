@@ -56,7 +56,7 @@ namespace Server
 			enter.posX = 0;
 			enter.posY = 0;
 			enter.posZ = 0;
-			Broadcast(enter.Write());
+			Broadcast(enter.Write()); 
 		}
 
 		public void Leave(ClientSession session)
@@ -85,5 +85,15 @@ namespace Server
 			move.posZ = session.PosZ;
 			Broadcast(move.Write());
 		}
+
+		public void Chat(ClientSession session, C_Chat packet)
+		{
+			session.SessionChat = packet.chatTxt;
+
+			S_BroadcastChat chat = new S_BroadcastChat();
+			chat.playerId = session.SessionId;
+			chat.chatTxt = session.SessionChat;
+			Broadcast(chat.Write());
+        }
 	}
 }

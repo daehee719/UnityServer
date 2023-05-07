@@ -12,6 +12,7 @@ public class NetworkManager : MonoBehaviour
 
 	public void Send(ArraySegment<byte> sendBuff)
 	{
+		Debug.Log(sendBuff);
 		_session.Send(sendBuff);
 	}
 
@@ -32,6 +33,8 @@ public class NetworkManager : MonoBehaviour
 
     void Update()
     {
+		// 패킷 큐에 있던 큐들을 다 뽑아옴
+		// 프레임마다 패킷 다 뽑아오는거임
 		List<IPacket> list = PacketQueue.Instance.PopAll();
 		foreach (IPacket packet in list)
 			PacketManager.Instance.HandlePacket(_session, packet);

@@ -31,4 +31,11 @@
 	<float name="posY"/>
 	<float name="posZ"/>
   </packet>
+	<packet name="C_Chat">
+		<string name="chatTxt"/>
+	</packet>
+	<packet name="S_BroadcastChat">
+		<int name="playerId"/>
+		<string name="chatTxt"/>
+	</packet>
 </PDL>

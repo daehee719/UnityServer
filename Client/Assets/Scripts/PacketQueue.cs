@@ -7,8 +7,11 @@ public class PacketQueue
     public static PacketQueue Instance { get; } = new PacketQueue();
 
     Queue<IPacket> _packetQueue = new Queue<IPacket>();
+    // 안전하게 혼자만 접근할 수 잇게
     object _lock = new object();
 
+
+    // 패킷 푸쉬용
     public void Push(IPacket packet)
     {
         lock (_lock)
@@ -17,6 +20,7 @@ public class PacketQueue
         }
     }
 
+    // 패킷 꺼내오기용
     public IPacket Pop()
     {
         lock (_lock)
@@ -28,6 +32,7 @@ public class PacketQueue
         }
     }
 
+    // 모든 패킷 다 꺼내오기
     public List<IPacket> PopAll()
     {
         List<IPacket> list = new List<IPacket>();

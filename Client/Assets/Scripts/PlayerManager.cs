@@ -9,6 +9,7 @@ public class PlayerManager
 
     public static PlayerManager Instance { get; } = new PlayerManager();
 
+    
     public void Add(S_PlayerList packet)
     {
         Object obj = Resources.Load("Player");
@@ -34,11 +35,12 @@ public class PlayerManager
         }
     }
 
+    // 서버에서 움직임 대리자 실행되면 같이 실행
     public void Move(S_BroadcastMove packet)
     {
         if (_myPlayer.PlayerId == packet.playerId)
         {
-            _myPlayer.transform.position = new Vector3(packet.posX, packet.posY, packet.posZ);
+            //  _myPlayer.transform.position = new Vector3(packet.posX, packet.posY, packet.posZ);
         }
         else
         {
@@ -50,6 +52,24 @@ public class PlayerManager
         }
     }
 
+    // 서버에서 채팅 대리자 실행되면 같이 실행
+    public void Chat(S_BroadcastChat packet)
+    {
+        if (_myPlayer.PlayerId == packet.playerId)
+        {
+            _myPlayer.PlayerChat = packet.chatTxt;
+        }
+        else
+        {
+            Player player = null;
+            if (_players.TryGetValue(packet.playerId, out player))
+            {
+                player.PlayerChat = packet.chatTxt;
+            }
+        }
+    }
+
+    // 서버에서 입장 대리자 실행되면 같이 실행
     public void EnterGame(S_BroadcastEnterGame packet)
     {
         if (packet.playerId == _myPlayer.PlayerId)
@@ -63,6 +83,8 @@ public class PlayerManager
 		_players.Add(packet.playerId, player);
 	}
 
+
+    // 서버에서 퇴장 대리자 실행되면 같이 실행
     public void LeaveGame(S_BroadcastLeaveGame packet)
     {
         if (_myPlayer.PlayerId == packet.playerId)

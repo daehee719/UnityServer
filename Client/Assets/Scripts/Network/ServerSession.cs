@@ -20,6 +20,7 @@ namespace DummyClient
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
 		{
+			// 옵션임. 패킷 큐에 패킷 넣어달라는 옵션
 			PacketManager.Instance.OnRecvPacket(this, buffer, (s, p) => PacketQueue.Instance.Push(p));
 		}
 
